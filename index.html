@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finance System — CSFJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <section id="login-screen" class="screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <img src="./assets/csfj-seal.jpg" alt="CSFJ seal" class="login-seal" />
+        <p class="login-title">Colegio de San Francisco Javier of Rizal</p>
+        <p class="login-subtitle">TRANSACTION LEDGER · ACCOUNTING &amp; REGISTRAR</p>
+      </div>
+      <p class="login-sub">Sign in to the Accounting workstation.</p>
+      <form id="login-form">
+        <label>Username
+          <input type="text" id="login-username" placeholder="cashier" autocomplete="username" />
+        </label>
+        <label>Password
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+        </label>
+        <p id="login-error" class="error-text hidden"></p>
+        <button type="submit" class="btn-navy" id="login-submit">Sign in</button>
+      </form>
+      <p class="hint">Demo credentials — username <code>cashier</code>, password <code>csfj2026</code></p>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="app-screen" class="screen hidden">
+    <header class="app-header">
+      <div class="header-brand">
+        <img src="./assets/csfj-seal.jpg" alt="CSFJ seal" class="header-seal" />
+        <div>
+          <p class="header-title">Colegio de San Francisco Javier of Rizal</p>
+          <p class="header-subtitle">TRANSACTION LEDGER · ACCOUNTING &amp; REGISTRAR</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="header-date" id="header-date"></span>
+        <button id="signout-btn" class="signout-btn" title="Sign out">⏻</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+
+      <p class="section-label">New Transaction</p>
+      <div class="tx-card">
+        <div class="tx-grid">
+
+          <!-- LEFT: form -->
+          <div class="tx-form">
+
+            <p class="sub-label">Student — Registrar (via Student Records API)</p>
+            <div class="field-row">
+              <label class="grow">Student number
+                <div class="lookup-row">
+                  <input type="text" id="f-studentNo" placeholder="COL000000" />
+                  <button id="lookup-btn" class="btn-outline-navy">Look up</button>
+                </div>
+              </label>
+            </div>
+            <div class="field-row two">
+              <label>Full name
+                <input type="text" id="f-fullName" disabled placeholder="— look up student —" />
+              </label>
+              <label>Program
+                <input type="text" id="f-program" disabled placeholder="— look up student —" />
+              </label>
+            </div>
+            <div class="field-row two">
+              <label>Year level
+                <input type="text" id="f-yearLevel" disabled placeholder="— look up student —" />
+              </label>
+              <label>Enrollment status
+                <input type="text" id="f-enrollStatus" disabled placeholder="— look up student —" />
+              </label>
+            </div>
+            <p id="lookup-notfound" class="notice-warn hidden">
+              ⚠ No match in the Registrar System for that student number.
+              <button id="lookup-fallback" class="link-btn-inline">Continue unverified</button>
+            </p>
+
+            <p class="sub-label">Payment — Accounting</p>
+            <div class="field-row two">
+              <label>Fee type
+                <select id="f-feeType">
+                  <option>Tuition Fee</option>
+                  <option>Miscellaneous Fee</option>
+                  <option>Laboratory Fee</option>
+                  <option>Library Fine</option>
+                  <option>ID Replacement</option>
+                </select>
+              </label>
+              <label>Gross amount (PHP)
+                <input type="number" id="f-amount" min="0" step="0.01" placeholder="15000.00" />
+              </label>
+            </div>
+            <div class="field-row two">
+              <label>Payment method
+                <select id="f-method">
+                  <option>Cash</option>
+                  <option>GCash</option>
+                  <option>Bank Transfer</option>
+                  <option>Check</option>
+                </select>
+              </label>
+              <label>O.R. number
+                <input type="text" id="f-orNumber" placeholder="OR-88452" />
+              </label>
+            </div>
+            <div class="field-row two">
+              <label>School year
+                <input type="text" id="f-schoolYear" placeholder="2025-2026" />
+              </label>
+              <label>Semester
+                <select id="f-semester">
+                  <option>1st Sem</option>
+                  <option>2nd Sem</option>
+                  <option>Summer</option>
+                </select>
+              </label>
+            </div>
+
+            <p class="sub-label">Discount — Scholarship / Employee Dependent</p>
+            <p id="discount-hint" class="notice-hint hidden"></p>
+            <div class="field-row two">
+              <label>Discount type
+                <select id="f-discountType">
+                  <option>None</option>
+                  <option>Academic Scholarship — Full</option>
+                  <option>Academic Scholarship — Partial</option>
+                  <option>Working Scholar</option>
+                  <option>Employee Dependent (Parent/Guardian CSFJ Staff)</option>
+                  <option>Sibling Discount</option>
+                  <option>Other / Manual</option>
+                </select>
+              </label>
+              <label>Discount (%)
+                <input type="number" id="f-discountPercent" min="0" max="100" step="1" value="0" />
+              </label>
+            </div>
+            <div class="field-row">
+              <label>Net amount to collect
+                <input type="text" id="f-netAmount" disabled value="₱0.00" />
+              </label>
+            </div>
+
+            <p class="sub-label">Sign-off</p>
+            <div class="field-row two">
+              <label>Processed by (Accounting)
+                <input type="text" id="f-processedBy" placeholder="Maria Santos" />
+              </label>
+              <label>Verified by (Registrar)
+                <input type="text" id="f-verifiedBy" placeholder="Pedro Reyes" />
+              </label>
+            </div>
+
+            <ul id="form-errors" class="error-list hidden"></ul>
+
+            <div class="action-row">
+              <button id="review-btn" class="btn-navy">Review Transaction</button>
+              <div id="confirm-row" class="confirm-row hidden">
+                <button id="commit-btn" class="btn-green">Confirm &amp; Commit</button>
+                <button id="cancel-review-btn" class="btn-text">Cancel</button>
+              </div>
+              <div id="post-commit-row" class="confirm-row hidden">
+                <button id="print-receipt-btn" class="btn-navy">🖨 Print Receipt</button>
+                <button id="new-transaction-btn" class="btn-outline-navy">New Transaction</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: receipt -->
+          <div class="tx-receipt-wrap">
+            <div class="receipt-card">
+              <div class="receipt-head">
+                <p class="receipt-head-title">Official Receipt</p>
+                <p class="receipt-head-sub" id="receipt-txn-status">TXN — PENDING</p>
+              </div>
+              <div class="receipt-body">
+                <div class="r"><span class="k">Student</span><span class="v" id="r-student">—</span></div>
+                <div class="r"><span class="k">No.</span><span class="v" id="r-no">—</span></div>
+                <div class="r"><span class="k">Program</span><span class="v" id="r-program">—</span></div>
+                <div class="r"><span class="k">Fee</span><span class="v" id="r-fee">Tuition Fee</span></div>
+                <div class="r"><span class="k">Method</span><span class="v" id="r-method">Cash</span></div>
+                <div class="r"><span class="k">O.R. No.</span><span class="v" id="r-or">—</span></div>
+                <div class="r"><span class="k">S.Y. / Sem</span><span class="v" id="r-sy">— · 1st Sem</span></div>
+                <div class="r"><span class="k">Gross amount</span><span class="v" id="r-gross">₱0.00</span></div>
+                <div class="r discount-row hidden" id="r-discount-row"><span class="k">Discount</span><span class="v" id="r-discount">—</span></div>
+                <div class="amount-row">
+                  <span class="k">Net amount</span>
+                  <span class="amt" id="r-amount">₱0.00</span>
+                </div>
+                <div class="status-pill" id="r-pill">Awaiting entry</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="section-label ledger-label">Ledger</p>
+      <div class="stat-grid">
+        <div class="stat-card"><p class="stat-label">Total transactions</p><p class="stat-value" id="stat-count">0</p></div>
+        <div class="stat-card"><p class="stat-label">Total collected</p><p class="stat-value gold" id="stat-collected">₱0.00</p></div>
+        <div class="stat-card"><p class="stat-label">Pending / Voided</p><p class="stat-value" id="stat-pv">0</p></div>
+      </div>
+      <div class="ledger-search-row">
+        <input type="text" id="ledger-search" placeholder="Search by student, ref no., or O.R. number…" />
+        <button id="refresh-btn" class="btn-outline-navy">Refresh</button>
+      </div>
+      <div id="ledger-list" class="ledger-list"></div>
+
+      <p class="section-label ledger-label">Manage Students</p>
+      <div class="tx-card">
+        <p class="sub-label" style="margin-top:0;">Add student</p>
+        <div class="field-row two">
+          <label>Student number
+            <input type="text" id="s-studentNo" placeholder="COL000000" />
+          </label>
+          <label>Full name
+            <input type="text" id="s-name" placeholder="Juan Dela Cruz" />
+          </label>
+        </div>
+        <div class="field-row two">
+          <label>Program
+            <input type="text" id="s-program" placeholder="BSIT" />
+          </label>
+          <label>Year level
+            <input type="text" id="s-yearLevel" placeholder="1st Year" />
+          </label>
+        </div>
+        <div class="field-row two">
+          <label>Enrollment status
+            <select id="s-status">
+              <option>Active</option>
+              <option>On Leave</option>
+              <option>Graduated</option>
+              <option>Unverified</option>
+            </select>
+          </label>
+          <label>Discount eligibility
+            <select id="s-discountEligibility">
+              <option>None</option>
+              <option>Academic Scholarship — Full</option>
+              <option>Academic Scholarship — Partial</option>
+              <option>Working Scholar</option>
+              <option>Employee Dependent (Parent/Guardian CSFJ Staff)</option>
+              <option>Sibling Discount</option>
+            </select>
+          </label>
+        </div>
+        <ul id="student-errors" class="error-list hidden"></ul>
+        <div class="action-row">
+          <button id="add-student-btn" class="btn-navy">Add Student</button>
+        </div>
+
+        <p class="sub-label">All students</p>
+        <div class="ledger-search-row">
+          <input type="text" id="student-search" placeholder="Search by student number or name…" />
+        </div>
+        <div id="student-list" class="ledger-list"></div>
+      </div>
+
+    </main>
+    <p id="toast" class="toast hidden"></p>
+  </section>
+
+<script src="./app.js"></script>
+</body>
+</html>
